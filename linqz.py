@@ -18,6 +18,7 @@
 
 import discord
 import asyncio
+import aiohttp
 import urllib
 
 from urllib.parse import urlparse
@@ -84,72 +85,72 @@ async def on_message(message):
 
 	if (link != ''):
 		tmp = await message.channel.send('URL detected')
-		httprequest = urllib.request.Request(
-			link,
-			headers={
-				'User-Agent': useragent
-			}
-		)
-		try:
-			webpage = urllib.request.urlopen(httprequest)
-			if webpage.getcode() == 200:
-				soup = BeautifulSoup(webpage, "lxml")
-				title = soup.title.string
-
+		async with aiohttp.ClientSession() as session:
+			async with session.get(
+				link,
+				headers={
+					'User-Agent': useragent
+				}
+			) as resp:
 				try:
-					metadescription = soup.find(
-						'meta',
-						attrs={'name':'description'}
-					)
-					description = metadescription["content"]
-				except:
-					description = 'No description'
+					if resp.status == 200:
+						soup = BeautifulSoup(await resp.text(), "lxml")
+						title = soup.title.string
 
-				try:
-					firstimagesrc = soup.find(
-						'img',
-						attrs={'name':'src'}
-					)
-					firstimage = firstimagesrc["content"]
-				except:
-					firstimage = ''
+						try:
+							metadescription = soup.find(
+								'meta',
+								attrs={'name':'description'}
+							)
+							description = metadescription["content"]
+						except:
+							description = 'No description'
 
-				await tmp.edit(
-					content = "Link `{}` sent by `{}`".format(
-						link,
-						message.author.name
-					),
-					embed = discord.Embed(
-						title = title,
-						type = "rich",
-						description = description,
-						url = link,
-						thumbnail = firstimage
+						try:
+							firstimagesrc = soup.find(
+								'img',
+								attrs={'name':'src'}
+							)
+							firstimage = firstimagesrc["content"]
+						except:
+							firstimage = ''
+
+						await tmp.edit(
+							content = "Link `{}` sent by `{}`".format(
+								link,
+								message.author.name
+							),
+							embed = discord.Embed(
+								title = title,
+								type = "rich",
+								description = description,
+								url = link,
+								thumbnail = firstimage
+							)
+						)
+					else:
+						await tmp.edit(
+							content = "Link `{}` sent by `{}`".format(
+								link,
+								message.author.name
+							),
+							embed = discord.Embed(
+								title = "Error {}".format(resp.status),
+								type = "rich",
+								description = resp.reason
+							)
+						)
+				except BaseException as e:
+					print(repr(e), flush = False)
+					await tmp.edit(
+						content = "Error retreiving URL `{}` from `{}`!".format(
+							link,
+							message.author.name
+						)
 					)
-				)
-			else:
-				await tmp.edit(
-					content = "Link `{}` sent by `{}`".format(
-						link,
-						message.author.name
-					),
-					embed = discord.Embed(
-						title = "Error {}".format(webpage.getcode()),
-						type = "rich",
-						description = webpage.reason
-					)
-				)
-		except:
-			await tmp.edit(
-				content = "Error retreiving URL `{}` from `{}`!".format(
-					link,
-					message.author.name
-				)
-			)
 	if (message.author.id == client.owner.id):
 		if message.content.startswith('!quit'):
 			await message.channel.send('Logging off, {}!'.format(message.author.name))
 			await client.close()
 
 client.run(bottoken)
-
