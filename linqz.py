@@ -27,6 +27,7 @@ from bs4 import BeautifulSoup
 client = discord.Client()
 url = URLValidator()
 
+useragent = 'Mozilla/5.0 (compatible; linqz/0.0; +https://github.com/raa-eruanna/linqz)'
 bottoken = 'INSERT BOT TOKEN HERE'
 whitelist = {
 	"zdoom.org",
@@ -80,7 +81,7 @@ async def on_message(message):
 		httprequest = urllib.request.Request(
 			link,
 			headers={
-				'User-Agent': 'Mozilla/5.0 (compatible; linqz/0.0; +https://drdteam.org/)'
+				'User-Agent': useragent
 			}
 		)
 		try:
