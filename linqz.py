@@ -69,10 +69,16 @@ async def on_message(message):
 				if parsed_domain.endswith('.' + domainlisting): iswhitelisted = 1
 
 			if iswhitelisted == 1:
-				print("Accepted ({}) #{} {} > {}".format(message.guild.name, message.channel, message.author, value))
+				try:
+					print("Accepted ({}) #{} {} > {}".format(message.guild.name, message.channel, message.author, value))
+				except:
+					print("Accepted {} > {}".format(message.author, value))
 				link = value
 			else:
-				print("Rejected ({}) #{} {} > {}".format(message.guild.name, message.channel, message.author, value))
+				try:
+					print("Rejected ({}) #{} {} > {}".format(message.guild.name, message.channel, message.author, value))
+				except:
+					print("Accepted {} > {}".format(message.author, value))
 		except ValidationError:
 			pass
 
