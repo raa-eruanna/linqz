@@ -73,8 +73,7 @@ async def on_message(message):
 				link = value
 			else:
 				print("Rejected ({}) #{} {} > {}".format(message.guild.name, message.channel, message.author, value))
-		except:
-			#traceback.print_exc(file=sys.stdout)
+		except ValidationError:
 			pass
 
 	if (link != ''):
