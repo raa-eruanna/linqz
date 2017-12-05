@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+#
 #    Linqz Discord Bot Link and Info Getter
 #    Copyright (c) 2017 Rachael Alexanderson
 #
@@ -14,7 +16,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#!/usr/bin/python3
 import discord
 import asyncio
 import urllib
