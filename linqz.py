@@ -78,7 +78,7 @@ async def on_message(message):
 				try:
 					print("Rejected ({}) #{} {} > {}".format(message.guild.name, message.channel, message.author, value))
 				except:
-					print("Accepted {} > {}".format(message.author, value))
+					print("Rejected {} > {}".format(message.author, value))
 		except ValidationError:
 			pass
 
