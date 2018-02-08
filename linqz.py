@@ -143,7 +143,7 @@ async def on_message(message):
 				except BaseException as e:
 					print(repr(e), flush = False)
 					await tmp.edit(
-						content = "Error retreiving URL `{}` from `{}`!".format(
+						content = "Error retrieving URL `{}` from `{}`!".format(
 							link,
 							message.author.name
 						)
